@@ -31,10 +31,6 @@ jobs:
         #if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && github.repository == 'legal-i/agent-example'
         run: |
           docker push ${{ secrets.DOCKER_REPO }}:latest
-
-  test-agent:
-    runs-on: ubuntu-latest
-    steps:
       - name: Start & Validate Agent
         uses: addnab/docker-run-action@v3
         with:
