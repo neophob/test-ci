@@ -1,0 +1,53 @@
+version: "3.0"
+services:
+  agent:
+    container_name: "legal-i-agent"
+    build:
+      dockerfile: docker/Dockerfile
+      context: ..
+    env_file:
+      - agent.env
+    ports:
+      - "8085:8085"
+
+  # monitoring    
+  prometheus:
+    image: prom/prometheus
+    container_name: "prometheus"
+    depends_on:
+      - agent
+    volumes:
+      - ./dependencies/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: "grafana"
+    depends_on:
+      - prometheus
+    links:
+      - prometheus:prometheus
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_DOMAIN=myrul.com
+    ports:
+      - "3000:3000"
+
+  # http proxy
+  squid:
+    image: sameersbn/squid:3.5.27-2
+    container_name: "squid"
+    ports:
+      - "3128:3128"
+    volumes:
+      - ./dependencies/squid.conf:/etc/squid/squid.conf
+      - ./dependencies/:/var/log/squid/
+
+
