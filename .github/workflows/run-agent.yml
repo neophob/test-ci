@@ -30,7 +30,7 @@ jobs:
             env
             TEMP_LOG_FILE=/tmp/tmp.log
             nohup java -XX:MaxRAMPercentage=90.0 org.springframework.boot.loader.JarLauncher &> "$TEMP_LOG_FILE" & tail -f "$TEMP_LOG_FILE" &
-            sleep 20
+            sleep 40
             pkill -e java
             echo "DONE - Looking for 'LegalCase has successfully been deleted' in log file..."
             grep -q "LegalCase has successfully been deleted" $TEMP_LOG_FILE; [ $? -eq 0 ] && exit 0 || exit 1
