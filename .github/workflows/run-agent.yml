@@ -20,7 +20,7 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v3
 
-      - name: Start Agent
+      - name: Start & Validate Agent
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ secrets.DOCKER_REPO }}:latest
@@ -33,7 +33,7 @@ jobs:
             pkill -e java
             echo "DONE - Looking for 'LegalCase has successfully been deleted' in log file..."
             cat /tmp/tmp.log
-            if  grep -q "LegalCase has successfully XXX been deleted" "/tmp/tmp.log" ; then
+            if  grep -q "LegalCase has successfully been deleted" "/tmp/tmp.log" ; then
               exit 0;
             else
               exit 1;
