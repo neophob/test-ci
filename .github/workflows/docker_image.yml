@@ -2,6 +2,8 @@
 # - DOCKER_USER: docker hub username
 # - DOCKER_TOKEN: docker hub access token
 # - DOCKER_REPO: docker repository in the ORGANISATION/IMAGENAME format
+# - LEGALI_API_URL: agent URL
+# - LEGALI_CLIENT_SECRET: guess!
 
 name: Docker image
 
@@ -9,7 +11,7 @@ name: Docker image
 on: [push]
 
 jobs:
-  update:
+  build-agent-docker-image:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repository
@@ -27,3 +29,28 @@ jobs:
         #        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && github.repository == 'legal-i/agent-example'
         run: |
           docker push ${{ secrets.DOCKER_REPO }}:latest
+
+  test-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Start & Validate Agent
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ secrets.DOCKER_REPO }}:latest
+          options: -e LEGALI_API_URL=${{ secrets.LEGALI_API_URL }} -e LEGALI_CLIENT_SECRET=${{ secrets.LEGALI_CLIENT_SECRET }}
+          run: |
+            echo "# START AGENT"
+            env
+            nohup java -XX:MaxRAMPercentage=90.0 org.springframework.boot.loader.JarLauncher > /tmp/tmp.log 2>&1 &
+            sleep 120
+            pkill -e java
+            echo "DONE - Looking for 'LegalCase has successfully been deleted' in log file..."
+            cat /tmp/tmp.log
+            if  grep -q "LegalCase has successfully been deleted" "/tmp/tmp.log" ; then
+              exit 0;
+            else
+              exit 1;
+            fi
