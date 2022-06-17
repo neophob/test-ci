@@ -7,7 +7,7 @@
 # - LEGALI_CLIENT_SECRET: guess!
 # - LEGALI_CLIENT_ID: <>
 
-name: Docker image
+name: Agent Example Validation
 
 # keep it simple for now, create a new Docker image after each rebuild
 on: [push]
