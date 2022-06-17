@@ -1,0 +1,36 @@
+# required secrets:
+# - LEGALI_API_URL:
+# - LEGALI_CLIENT_SECRET:
+# - DOCKER_REPO: docker repository in the ORGANISATION/IMAGENAME format
+
+name: Test Agent Example
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Person to greet"
+        required: true
+        default: "Mona the Octocat"
+
+jobs:
+  test-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Start Agent
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ secrets.DOCKER_REPO }}:latest
+          run: |
+            echo "# START AGENT"
+            env
+            TEMP_LOG_FILE=/tmp/tmp.log
+            nohup java -XX:MaxRAMPercentage=90.0 org.springframework.boot.loader.JarLauncher &> "$TEMP_LOG_FILE" & tail -f "$TEMP_LOG_FILE" &
+            sleep 5
+            pkill -e java
+            echo "DONE - VALIDATED"
+            cat $TEMP_LOG_FILE
+            exit 0
