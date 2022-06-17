@@ -33,7 +33,7 @@ jobs:
             pkill -e java
             echo "DONE - Looking for 'LegalCase has successfully been deleted' in log file..."
             cat /tmp/tmp.log
-            if  grep -q "LegalCase has successfully been deleted" "/tmp/tmp.log" ; then
+            if  grep -q "LegalCase has successfully XXX been deleted" "/tmp/tmp.log" ; then
               exit 0;
             else
               exit 1;
