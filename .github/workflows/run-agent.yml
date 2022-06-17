@@ -24,6 +24,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ secrets.DOCKER_REPO }}:latest
+          options: -e LEGALI_API_URL=${{ secrets.LEGALI_API_URL }} -e LEGALI_CLIENT_SECRET=${{ secrets.LEGALI_CLIENT_SECRET }}
           run: |
             echo "# START AGENT"
             env
