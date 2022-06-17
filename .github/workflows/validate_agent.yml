@@ -37,16 +37,16 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ secrets.DOCKER_REPO }}:latest
-          options: -e LEGALI_API_URL=${{ secretcds.LEGALI_API_URL }} -e LEGALI_CLIENT_SECRET=${{ secrets.LEGALI_CLIENT_SECRET }}
+          options: -e LEGALI_API_URL=${{ secrets.LEGALI_API_URL }} -e LEGALI_CLIENT_SECRET=${{ secrets.LEGALI_CLIENT_SECRET }}
           run: |
             echo "# START AGENT"
             env
             nohup java -XX:MaxRAMPercentage=90.0 org.springframework.boot.loader.JarLauncher > /tmp/tmp.log 2>&1 &
-            sleep 30
+            sleep 60
             pkill -e java
-            echo "DONE - Looking for 'LegalCase has successfully been deleted' in log file..."
+            echo "DONE - Looking for 'PingPong Event received' in log file..."
             cat /tmp/tmp.log
-            if  grep -q "LegalCase has successfully been deleted" "/tmp/tmp.log" ; then
+            if  grep -q "PingPong Event received" "/tmp/tmp.log" ; then
               exit 0;
             else
               exit 1;
