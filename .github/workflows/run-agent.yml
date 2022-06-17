@@ -33,4 +33,5 @@ jobs:
             sleep 40
             pkill -e java
             echo "DONE - Looking for 'LegalCase has successfully been deleted' in log file..."
+            cat $TEMP_LOG_FILE
             grep -q "LegalCase has successfully been deleted" $TEMP_LOG_FILE; [ $? -eq 0 ] && exit 0 || exit 1
