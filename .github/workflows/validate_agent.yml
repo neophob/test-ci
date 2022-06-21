@@ -10,7 +10,10 @@
 name: Agent Example Validation
 
 # keep it simple for now, create a new Docker image after each rebuild
-on: [push]
+on:
+  push:
+    branches:
+      - "**"
 
 jobs:
   validate-sdk-agent:

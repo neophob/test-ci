@@ -24,9 +24,6 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
-      - name: Build Release
-        run: ./dev/build-release.sh
-
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "./*"
