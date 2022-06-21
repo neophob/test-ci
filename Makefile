@@ -29,6 +29,10 @@ verify:
 build:
 	@${maven_cmd} package -DskipTests
 
+## github-release: build a zip file to release on Github
+github-release:
+	@zip -r sdk-release.zip ./docker/ ./Makefile mvn* pmd* pom.xml proj* ./quickstart/ README.md spot* ./src/
+
 ## dockerize: create agent docker image
 dockerize:
 	@docker build -f docker/Dockerfile -t "$(DOCKER_TAG)" .

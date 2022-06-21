@@ -24,9 +24,12 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
+      - name: Build Release
+        run: make github-release
+
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "./*"
+          artifacts: "sdk-release.zip"
           tag: ${{ steps.get_version.outputs.VERSION }}
           name: Release ${{ steps.get_version.outputs.VERSION }}
           allowUpdates: false
