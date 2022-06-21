@@ -1,7 +1,7 @@
 package ch.legali.sdk.example;
 
 import ch.legali.sdk.example.config.ExampleConfig;
-import ch.legali.sdk.exceptions.AlreadyExistsException;
+import ch.legali.sdk.exceptions.FileConflictException;
 import ch.legali.sdk.exceptions.NotFoundException;
 import ch.legali.sdk.models.AgentLegalCaseDTO;
 import ch.legali.sdk.models.AgentSourceFileDTO;
@@ -65,13 +65,6 @@ public class ExampleThread implements Runnable {
             .build();
     this.legalCaseService.create(legalCase);
 
-    // provoke exception
-    try {
-      this.legalCaseService.create(legalCase);
-    } catch (AlreadyExistsException alreadyExistsException) {
-      log.info("🙅‍  Already exists, refused to do it again!‍️");
-    }
-
     // update legal case
     log.info("🤓  Updating LegalCase");
     AgentLegalCaseDTO legalCaseResponse = this.legalCaseService.get(legalCase.getLegalCaseUUID());
@@ -118,6 +111,21 @@ public class ExampleThread implements Runnable {
       log.warn(
           "💥 legal-i was not fast enough to process this file {}", sourceFile.getSourceFileUUID());
     }
+
+    // Try to create same sourcefile with another file
+    try {
+      ClassPathResource cp = new ClassPathResource("sample2.pdf");
+      try {
+        File file2 = cp.getFile();
+        this.sourceFileService.create(sourceFile, file2);
+      } catch (IOException e) {
+        log.error("🙅‍  Failed to open sample2.pdf file", e);
+      }
+    } catch (FileConflictException fileConflictException) {
+      log.info("🙅‍  Sourcefile file are different, refused to do something!‍️");
+    }
+    log.info("🧾  Creating the same SourceFile AGAIN (creates are idempotent)");
+    this.sourceFileService.create(sourceFile, fileToUpload);
 
     List<AgentSourceFileDTO> list =
         this.sourceFileService.getByLegalCase(legalCase.getLegalCaseUUID());
