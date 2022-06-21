@@ -13,7 +13,7 @@ name: Agent Example Validation
 on: [push]
 
 jobs:
-  build-agent-docker-image:
+  validate-sdk-agent:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repository
