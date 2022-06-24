@@ -6,7 +6,7 @@
 - The component has two sides: The SDK that talks to the cloud and the connector that talks to the customer system.
 - The latest version is available on legal-i's private GitHub repository.
 
-## Quickstart 123
+## Quickstart 1234
 
 *Prerequisites*
 
