@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>ch.legali</groupId>
 	<artifactId>agent-example</artifactId>
-	<version>0.12.0a</version>
+	<version>0.12.2</version>
 	<name>Agent Example</name>
 	<description>legal-i Agent Example</description>
 	<properties>
