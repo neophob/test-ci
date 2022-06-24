@@ -18,7 +18,7 @@ jobs:
           distribution: "adopt"
 
       - name: Build with Maven
-        run: make verify
+        run: AAAAAAAAAA
 
       - name: Get the tag version
         id: get_version
