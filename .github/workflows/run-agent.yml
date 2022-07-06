@@ -17,29 +17,20 @@ jobs:
   test-agent:
     runs-on: ubuntu-latest
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
-
-      - name: Start & Validate Agent
+      - name: I will fail
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ secrets.DOCKER_REPO }}:latest
           options: -e LEGALI_API_URL=${{ secrets.LEGALI_API_URL }} -e LEGALI_CLIENT_SECRET=${{ secrets.LEGALI_CLIENT_SECRET }}
           run: |
-            echo "# START AGENT"
-            env
-            nohup java -XX:MaxRAMPercentage=90.0 org.springframework.boot.loader.JarLauncher > /tmp/tmp.log 2>&1 &
-            sleep 60
-            pkill -e java
-            echo "DONE - Looking for 'PingPong Event received' in log file..."
-            cat /tmp/tmp.log
-            if  grep -q "PingPong Event received" "/tmp/tmp.log" ; then
-              echo "DONE - Looking for 'LegalCase has successfully been deleted' in log file..."
-              if  grep -q "LegalCase has successfully been deleted" "/tmp/tmp.log" ; then
-                exit 0;
-              else
-                exit 1;
-              fi
-            else
-              exit 1;
-            fi
+            exit 1;
+
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@v1
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+
