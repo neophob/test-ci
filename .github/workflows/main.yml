@@ -3,7 +3,7 @@ name: Smoke Test
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 0/1 * 1/1 * ? *'
+    - cron: '*/1 * * * *'
   push:
     branches:
       - master
